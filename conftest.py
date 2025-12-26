@@ -1,11 +1,12 @@
 import pytest
 import allure
-from selenium import webdriver
 from utils.driver import create_driver
 import os
 
 @pytest.fixture(scope="function")
 def driver():
+    """Фикстура для создания и закрытия драйвера"""
+    # В Docker всегда используем headless режим
     is_docker = os.path.exists('/.dockerenv')
     
     if is_docker:
@@ -16,15 +17,18 @@ def driver():
     
     driver_instance = create_driver(headless=headless_mode)
     
+    # Максимизируем окно браузера (если не headless)
     if not headless_mode:
         driver_instance.maximize_window()
     
     yield driver_instance
     
+    # После теста
     driver_instance.quit()
 
 @pytest.hookimpl(tryfirst=True, hookwrapper=True)
 def pytest_runtest_makereport(item, call):
+    """Хук для создания скриншотов при падении тестов"""
     outcome = yield
     rep = outcome.get_result()
     
