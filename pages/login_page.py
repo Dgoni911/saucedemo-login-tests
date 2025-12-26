@@ -1,38 +1,47 @@
-from playwright.sync_api import Page, expect
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 import allure
-import time
 
 class LoginPage:
-    def __init__(self, page: Page):
-        self.page = page
-        self.timeout = 10000
+    def __init__(self, driver):
+        self.driver = driver
+        self.wait = WebDriverWait(driver, 10)
         
-    @allure.step("Открыть страницу логина SauceDemo")
+        self.username_field = (By.ID, "user-name")
+        self.password_field = (By.ID, "password")
+        self.login_button = (By.ID, "login-button")
+        self.error_message = (By.CSS_SELECTOR, "[data-test='error']")
+        self.inventory_container = (By.ID, "inventory_container")
+        
+    @allure.step("Открыть страницу логина")
     def open(self):
-        self.page.goto("https://www.saucedemo.com/", wait_until="domcontentloaded")
-        self.page.wait_for_load_state("networkidle")
+        self.driver.get("https://www.saucedemo.com/")
         return self
         
     @allure.step("Ввести имя пользователя: {username}")
     def enter_username(self, username):
-        username_field = self.page.locator("#user-name")
-        username_field.wait_for(state="visible", timeout=self.timeout)
-        username_field.fill("")
-        username_field.fill(username)
+        username_field = self.wait.until(
+            EC.visibility_of_element_located(self.username_field)
+        )
+        username_field.clear()
+        username_field.send_keys(username)
         return self
         
     @allure.step("Ввести пароль: {password}")
     def enter_password(self, password):
-        password_field = self.page.locator("#password")
-        password_field.wait_for(state="visible", timeout=self.timeout)
-        password_field.fill("")
-        password_field.fill(password)
+        password_field = self.wait.until(
+            EC.visibility_of_element_located(self.password_field)
+        )
+        password_field.clear()
+        password_field.send_keys(password)
         return self
         
     @allure.step("Нажать кнопку логина")
     def click_login(self):
-        login_button = self.page.locator("#login-button")
-        login_button.wait_for(state="visible", timeout=self.timeout)
+        login_button = self.wait.until(
+            EC.element_to_be_clickable(self.login_button)
+        )
         login_button.click()
         return self
         
@@ -46,34 +55,23 @@ class LoginPage:
     @allure.step("Получить текст ошибки")
     def get_error_message(self):
         try:
-            error_element = self.page.locator("[data-test='error']")
-            error_element.wait_for(state="visible", timeout=5000)
-            return error_element.text_content()
+            error_element = self.wait.until(
+                EC.visibility_of_element_located(self.error_message)
+            )
+            return error_element.text
         except:
             return None
             
     @allure.step("Проверить успешный логин")
     def is_inventory_page_displayed(self):
         try:
-            self.page.wait_for_selector("#inventory_container, .inventory_list, #react-burger-menu-btn", 
-                                      state="visible", timeout=15000)
+            self.wait.until(
+                EC.visibility_of_element_located(self.inventory_container)
+            )
             return True
         except:
             return False
             
-    @allure.step("Проверить текущий URL")
+    @allure.step("Получить текущий URL")
     def get_current_url(self):
-        return self.page.url
-        
-    @allure.step("Проверить наличие элемента на странице")
-    def is_element_present(self, selector, timeout=5000):
-        try:
-            self.page.wait_for_selector(selector, state="visible", timeout=timeout)
-            return True
-        except:
-            return False
-            
-    @allure.step("Сделать паузу на {seconds} секунд")
-    def wait(self, seconds):
-        time.sleep(seconds)
-        return self
+        return self.driver.current_url
