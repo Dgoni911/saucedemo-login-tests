@@ -1,14 +1,14 @@
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
-from webdriver_manager.chrome import ChromeDriverManager
+import os
 import allure
 
-def create_driver(headless=False):
+def create_driver(headless=True):
     chrome_options = Options()
     
     if headless:
-        chrome_options.add_argument("--headless")
+        chrome_options.add_argument("--headless=new") 
     
     chrome_options.add_argument("--no-sandbox")
     chrome_options.add_argument("--disable-dev-shm-usage")
@@ -18,7 +18,13 @@ def create_driver(headless=False):
     chrome_options.add_experimental_option("excludeSwitches", ["enable-automation"])
     chrome_options.add_experimental_option('useAutomationExtension', False)
     
-    service = Service(ChromeDriverManager().install())
-    driver = webdriver.Chrome(service=service, options=chrome_options)
+    chrome_options.binary_location = "/usr/bin/google-chrome-stable"
     
+    if os.path.exists("/usr/local/bin/chromedriver"):
+        service = Service(executable_path="/usr/local/bin/chromedriver")
+    else:
+        from webdriver_manager.chrome import ChromeDriverManager
+        service = Service(ChromeDriverManager().install())
+    
+    driver = webdriver.Chrome(service=service, options=chrome_options)
     return driver
