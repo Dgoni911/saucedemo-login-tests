@@ -1,7 +1,5 @@
 import pytest
 import allure
-from playwright.sync_api import Page
-import os
 
 @pytest.fixture(scope="function")
 def page(browser):
@@ -16,7 +14,11 @@ def page(browser):
 @pytest.fixture(scope="session")
 def browser():
     """Фикстура для создания браузера"""
-    from playwright.sync_api import sync_playwright
+    # Импортируем здесь, чтобы избежать ошибок импорта
+    try:
+        from playwright.sync_api import sync_playwright
+    except ImportError as e:
+        pytest.skip(f"Playwright не установлен: {e}")
     
     with sync_playwright() as p:
         browser = p.chromium.launch(

@@ -1,8 +1,7 @@
-from playwright.sync_api import Page
 import allure
 
 class LoginPage:
-    def __init__(self, page: Page):
+    def __init__(self, page):
         self.page = page
     
     @allure.step("Открыть страницу логина")
