@@ -1,25 +1,12 @@
 import pytest
 import allure
 from utils.driver import create_driver
-import os
 
 @pytest.fixture(scope="function")
 def driver():
     """Фикстура для создания и закрытия драйвера"""
-    # В Docker всегда используем headless режим
-    is_docker = os.path.exists('/.dockerenv')
-    
-    if is_docker:
-        print("Запуск в Docker контейнере, используем headless режим")
-        headless_mode = True
-    else:
-        headless_mode = os.getenv('HEADLESS', 'false').lower() == 'true'
-    
-    driver_instance = create_driver(headless=headless_mode)
-    
-    # Максимизируем окно браузера (если не headless)
-    if not headless_mode:
-        driver_instance.maximize_window()
+    # В Docker всегда headless
+    driver_instance = create_driver(headless=True)
     
     yield driver_instance
     

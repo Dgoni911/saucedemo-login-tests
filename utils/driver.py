@@ -1,11 +1,10 @@
 from selenium import webdriver
-from selenium.webdriver.chrome.service import Service as ChromeService
+from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
-from webdriver_manager.chrome import ChromeDriverManager
 import os
 
 def create_driver(headless=True):
-    """Создание и настройка драйвера Chrome с webdriver-manager"""
+    """Создание и настройка драйвера Chrome"""
     chrome_options = Options()
     
     if headless:
@@ -19,8 +18,18 @@ def create_driver(headless=True):
     chrome_options.add_experimental_option("excludeSwitches", ["enable-automation"])
     chrome_options.add_experimental_option('useAutomationExtension', False)
     
-    # Используем webdriver-manager для автоматической загрузки правильной версии ChromeDriver
-    service = ChromeService(ChromeDriverManager().install())
+    # Всегда используем явный путь к chromedriver
+    chrome_driver_path = "/usr/local/bin/chromedriver"
     
-    driver = webdriver.Chrome(service=service, options=chrome_options)
-    return driver
+    if os.path.exists(chrome_driver_path):
+        service = Service(executable_path=chrome_driver_path)
+        print(f"Используем chromedriver из: {chrome_driver_path}")
+    else:
+        raise FileNotFoundError(f"ChromeDriver не найден по пути: {chrome_driver_path}")
+    
+    try:
+        driver = webdriver.Chrome(service=service, options=chrome_options)
+        return driver
+    except Exception as e:
+        print(f"Ошибка при создании драйвера: {e}")
+        raise
