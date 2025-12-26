@@ -1,33 +1,20 @@
-FROM python:3.10-slim
+
+FROM selenium/standalone-chrome:latest
+
+USER root
+
+RUN apt-get update && apt-get install -y \
+    python3 \
+    python3-pip \
+    && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
-RUN apt-get update && apt-get install -y \
-    wget \
-    curl \
-    gnupg \
-    unzip \
-    libnss3 \
-    libatk-bridge2.0-0 \
-    libdrm2 \
-    libxkbcommon0 \
-    libgbm1 \
-    libasound2 \
-    libpangocairo-1.0-0 \
-    libxcomposite1 \
-    libxdamage1 \
-    libxrandr2 \
-    libgtk-3-0 \
-    fonts-liberation \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
-
 COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
-
-RUN playwright install --with-deps chromium
+RUN pip3 install --no-cache-dir -r requirements.txt
 
 COPY . .
 
+USER 1200
 
-CMD ["pytest", "--alluredir=allure-results", "-v"]
+CMD ["python3", "-m", "pytest", "--alluredir=allure-results", "-v"]

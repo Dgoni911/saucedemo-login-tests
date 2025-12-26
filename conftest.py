@@ -6,9 +6,18 @@ import os
 
 @pytest.fixture(scope="function")
 def driver():
-    driver_instance = create_driver(headless=False)
+    is_docker = os.path.exists('/.dockerenv')
     
-    driver_instance.maximize_window()
+    if is_docker:
+        print("Запуск в Docker контейнере, используем headless режим")
+        headless_mode = True
+    else:
+        headless_mode = os.getenv('HEADLESS', 'false').lower() == 'true'
+    
+    driver_instance = create_driver(headless=headless_mode)
+    
+    if not headless_mode:
+        driver_instance.maximize_window()
     
     yield driver_instance
     
@@ -21,11 +30,12 @@ def pytest_runtest_makereport(item, call):
     
     if rep.when == "call" and rep.failed:
         try:
-            driver = item.funcargs['driver']
-            allure.attach(
-                driver.get_screenshot_as_png(),
-                name="screenshot",
-                attachment_type=allure.attachment_type.PNG
-            )
+            driver = item.funcargs.get('driver')
+            if driver:
+                allure.attach(
+                    driver.get_screenshot_as_png(),
+                    name="screenshot",
+                    attachment_type=allure.attachment_type.PNG
+                )
         except Exception as e:
             print(f"Failed to take screenshot: {e}")
