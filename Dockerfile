@@ -2,7 +2,7 @@ FROM python:3.10-slim
 
 WORKDIR /app
 
-# Установка системных зависимостей для Playwright
+# Установка системных зависимостей для Playwright (исправленная)
 RUN apt-get update && apt-get install -y \
     wget \
     curl \
@@ -20,6 +20,8 @@ RUN apt-get update && apt-get install -y \
     libxrandr2 \
     libgtk-3-0 \
     fonts-liberation \
+    fonts-unifont \
+    fonts-freefont-ttf \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -27,14 +29,11 @@ RUN apt-get update && apt-get install -y \
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Установка браузеров Playwright
-RUN playwright install --with-deps chromium
+# Установка браузеров Playwright (без --with-deps, так как зависимости уже установлены)
+RUN playwright install chromium
 
 # Копирование исходного кода
 COPY . .
 
-# Создаем директорию для результатов
-RUN mkdir -p allure-results
-
 # Запуск тестов
-CMD ["pytest", "--alluredir=allure-results", "-v"]
+CMD ["pytest", "-v", "--tb=short"]
