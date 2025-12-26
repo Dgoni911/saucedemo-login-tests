@@ -18,7 +18,19 @@
 
 ## Установка
 
-1. Клонировать репозиторий:
-```bash
-git clone https://github.com/yourusername/saucedemo-automation.git
-cd saucedemo-automation
+pip install -r requirements.txt
+
+# Запуск всех тестов
+pytest
+
+# Запуск с генерацией Allure отчетов
+pytest --alluredir=allure-results
+
+# Просмотр отчета Allure
+allure serve allure-results
+
+# Сборка образа
+docker build -t saucedemo-tests .
+
+# Запуск тестов в контейнере
+docker run saucedemo-tests
