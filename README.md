@@ -21,7 +21,7 @@
 pip install -r requirements.txt
 
 # Запуск всех тестов
-pytest
+python -m pytest
 
 # Запуск с генерацией Allure отчетов
 pytest --alluredir=allure-results
