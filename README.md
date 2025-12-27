@@ -26,9 +26,6 @@ python -m pytest
 # Запуск с генерацией Allure отчетов
 pytest --alluredir=allure-results
 
-# Просмотр отчета Allure
-allure serve allure-results
-
 # Сборка образа
 docker build -t saucedemo-tests .
 
