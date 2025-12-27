@@ -1,0 +1,11 @@
+.git
+__pycache__
+*.pyc
+venv
+env
+*.log
+allure-results
+allure-report
+.vscode
+.idea
+.DS_Store
