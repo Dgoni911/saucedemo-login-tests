@@ -33,4 +33,4 @@ allure serve allure-results
 docker build -t saucedemo-tests .
 
 # Запуск тестов в контейнере
-docker run saucedemo-tests
+docker run saucedemo-tests"# Test update" 
