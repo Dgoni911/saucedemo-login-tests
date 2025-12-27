@@ -10,7 +10,6 @@ class TestLogin:
     @allure.title("TC-1: Успешная авторизация с валидными данными")
     @allure.severity(allure.severity_level.CRITICAL)
     def test_successful_login(self, page):
-        """Тест успешного логина с правильными учетными данными"""
         login_page = LoginPage(page)
         
         with allure.step("1. Открыть страницу логина"):
@@ -31,7 +30,6 @@ class TestLogin:
     @allure.title("TC-2: Авторизация с неверным паролем")
     @allure.severity(allure.severity_level.NORMAL)
     def test_login_with_wrong_password(self, page):
-        """Тест логина с неверным паролем"""
         login_page = LoginPage(page)
         
         with allure.step("1. Открыть страницу логина"):
@@ -49,7 +47,6 @@ class TestLogin:
     @allure.title("TC-3: Авторизация заблокированного пользователя")
     @allure.severity(allure.severity_level.NORMAL)
     def test_locked_out_user_login(self, page):
-        """Тест логина заблокированного пользователя"""
         login_page = LoginPage(page)
         
         with allure.step("1. Открыть страницу логина"):
@@ -67,7 +64,6 @@ class TestLogin:
     @allure.title("TC-4: Авторизация с пустыми полями")
     @allure.severity(allure.severity_level.NORMAL)
     def test_login_with_empty_fields(self, page):
-        """Тест логина с пустыми полями"""
         login_page = LoginPage(page)
         
         with allure.step("1. Открыть страницу логина"):
@@ -85,7 +81,6 @@ class TestLogin:
     @allure.title("TC-5: Авторизация пользователя performance_glitch_user")
     @allure.severity(allure.severity_level.NORMAL)
     def test_performance_glitch_user_login(self, page):
-        """Тест логина пользователя с возможными задержками"""
         login_page = LoginPage(page)
         start_time = time.time()
         
@@ -114,5 +109,4 @@ class TestLogin:
                 attachment_type=allure.attachment_type.TEXT
             )
             
-            # Проверяем что время логина разумное
             assert elapsed_time < 30, f"Логин занял слишком много времени: {elapsed_time:.2f} секунд"

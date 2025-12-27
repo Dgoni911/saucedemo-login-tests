@@ -3,7 +3,6 @@ import allure
 
 @pytest.fixture(scope="function")
 def page(browser):
-    """Фикстура для создания новой страницы"""
     context = browser.new_context(
         viewport={'width': 1920, 'height': 1080}
     )
@@ -13,8 +12,7 @@ def page(browser):
 
 @pytest.fixture(scope="session")
 def browser():
-    """Фикстура для создания браузера"""
-    # Импортируем здесь, чтобы избежать ошибок импорта
+
     try:
         from playwright.sync_api import sync_playwright
     except ImportError as e:
@@ -34,7 +32,6 @@ def browser():
 
 @pytest.hookimpl(tryfirst=True, hookwrapper=True)
 def pytest_runtest_makereport(item, call):
-    """Хук для создания скриншотов при падении тестов"""
     outcome = yield
     rep = outcome.get_result()
     

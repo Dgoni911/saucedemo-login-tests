@@ -4,7 +4,7 @@ from selenium.webdriver.chrome.options import Options
 import os
 
 def create_driver(headless=True):
-    """Создание и настройка драйвера Chrome"""
+
     chrome_options = Options()
     
     if headless:
@@ -18,7 +18,6 @@ def create_driver(headless=True):
     chrome_options.add_experimental_option("excludeSwitches", ["enable-automation"])
     chrome_options.add_experimental_option('useAutomationExtension', False)
     
-    # Всегда используем явный путь к chromedriver
     chrome_driver_path = "/usr/local/bin/chromedriver"
     
     if os.path.exists(chrome_driver_path):
