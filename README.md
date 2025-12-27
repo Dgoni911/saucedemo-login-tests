@@ -1,1 +1,0 @@
-# saucedemo-login-tests
